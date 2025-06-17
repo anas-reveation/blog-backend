@@ -1,37 +1,34 @@
 const express = require("express");
+const cors = require("cors");
 const app = express();
-const path = require("path");
+const blogRoutes = require("./routes/blogRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const allowedOrigins = [
   "https://blog-frontend-xxfv.vercel.app",
   "http://localhost:3000"
 ];
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
+// ✅ CORS middleware
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
 
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
+// ✅ Manually handle OPTIONS for all routes
+app.options("*", cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
 
-  next();
-});
-
-app.use(express.json());
+// ✅ JSON middleware
+app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded files
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// ✅ Static files
+app.use("/uploads", express.static("uploads"));
 
-// Routes
-const blogRoutes = require("./routes/blogRoutes");
-const authRoutes = require("./routes/authRoutes");
+// ✅ Routes
 app.use("/api/blogs", blogRoutes);
 app.use("/api/auth", authRoutes);
 
