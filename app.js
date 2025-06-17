@@ -5,7 +5,7 @@ const blogRoutes = require("./routes/blogRoutes");
 const authRoutes = require("./routes/authRoutes");
 
 const allowedOrigins = [
-  "https://blog-frontend-xxfv.vercel.app",
+  "https://blog-frontend-xxfv.vercel.app/blogs",
   "http://localhost:3000",
 ];
 
