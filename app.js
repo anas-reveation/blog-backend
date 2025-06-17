@@ -1,13 +1,12 @@
 const express = require("express");
-const cors = require("cors");
 const app = express();
+const path = require("path");
 
 const allowedOrigins = [
   "https://blog-frontend-xxfv.vercel.app",
   "http://localhost:3000"
 ];
 
-// CORS middleware FIRST
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -17,7 +16,6 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Allow-Credentials", "true");
 
-  // Handle preflight request
   if (req.method === "OPTIONS") {
     return res.sendStatus(200);
   }
@@ -28,8 +26,8 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static file handling
-app.use("/uploads", express.static("uploads"));
+// Serve uploaded files
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
 const blogRoutes = require("./routes/blogRoutes");
