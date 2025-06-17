@@ -5,7 +5,17 @@ const blogRoutes = require("./routes/blogRoutes");
 const authRoutes = require("./routes/authRoutes");
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      "https://blog-frontend-xxfv.vercel.app",
+      "http://localhost:3000"
+    ];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS: " + origin));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
